@@ -1,1 +1,1 @@
-Sharp Wave Ripple Detector Plugin
+# Sharp Wave Ripple Detector 
