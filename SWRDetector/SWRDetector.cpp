@@ -198,6 +198,10 @@ void SWRDetector::process(AudioSampleBuffer& buffer,
 				{
 					module.shortGreaterThanLongCount++;
 				}
+				else
+				{
+					module.shortGreaterThanLongCount = 0;
+				}
 
 				if (module.shortGreaterThanLongCount >= (shortTimeWindow * getSampleRate()))
 				{
