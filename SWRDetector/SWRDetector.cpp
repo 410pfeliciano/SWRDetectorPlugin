@@ -202,6 +202,7 @@ void SWRDetector::process(AudioSampleBuffer& buffer,
 				if (module.shortGreaterThanLongCount >= (shortTimeWindow * getSampleRate()))
 				{
 					module.numSWRDetected++;
+					module.shortGreaterThanLongCount = 0;
 					addEvent(events, TTL, i, 1, module.outputChan);
 					module.samplesSinceTrigger = 0;
 					module.wasTriggered = true;
