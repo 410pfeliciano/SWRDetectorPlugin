@@ -57,7 +57,7 @@ SWRDetectorEditor::SWRDetectorEditor(GenericProcessor* parentNode, bool useDefau
 
 	plusButton->setToggleState(true, sendNotification);
 	
-	thresholdConstLabel = new Label("thresholdConst", "-");
+	thresholdConstLabel = new Label("thresholdConst", "3.0");
 	thresholdConstLabel->setBounds(85, 60, 40, 20);
 	thresholdConstLabel->setFont(Font("Small Text", 12, Font::plain));
 	thresholdConstLabel->setColour(Label::textColourId, Colours::white);
@@ -66,7 +66,7 @@ SWRDetectorEditor::SWRDetectorEditor(GenericProcessor* parentNode, bool useDefau
 	thresholdConstLabel->addListener(this);
 	addAndMakeVisible(thresholdConstLabel);
 
-	eventStimulationTimeLabel = new Label("thresholdTime", "-");
+	eventStimulationTimeLabel = new Label("thresholdTime", "0.05");
 	eventStimulationTimeLabel->setBounds(85, 90, 40, 20);
 	eventStimulationTimeLabel->setFont(Font("Small Text", 12, Font::plain));
 	eventStimulationTimeLabel->setColour(Label::textColourId, Colours::white);
@@ -360,7 +360,7 @@ void DetectorInterface::paint(Graphics& g)
 	
 	g.drawText("EVENT", 0, 40, 85, 10, Justification::left, true);
 	g.drawText("STIMULATION", 0, 50, 85, 10, Justification::left, true);
-	g.drawText("TIME", 0, 60, 85, 10, Justification::left, true);
+	g.drawText("TIME (s)", 0, 60, 85, 10, Justification::left, true);
 }
 
 

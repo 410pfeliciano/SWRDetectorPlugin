@@ -63,7 +63,7 @@ void SWRDetector::addModule()
 	m.numSWRDetected = 0;
 	m.shortGreaterThanLongCount = 0;
 	m.thresholdComparisonConstant = 3.0;
-	m.eventStimulationTime = 0.033;
+	m.eventStimulationTime = 0.05;
 
 	modules.add(m);
 }
