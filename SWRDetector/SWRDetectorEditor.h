@@ -40,88 +40,86 @@ User interface for the SWRDetector processor.
 */
 
 class SWRDetectorEditor : public GenericEditor,
-	public ComboBox::Listener,
-	public Label::Listener
+    public ComboBox::Listener,
+    public Label::Listener
 {
 public:
-	SWRDetectorEditor(GenericProcessor* parentNode, bool useDefaultParameterEditors);
-	virtual ~SWRDetectorEditor();
+    SWRDetectorEditor(GenericProcessor* parentNode, bool useDefaultParameterEditors);
+    virtual ~SWRDetectorEditor();
 
-	void buttonEvent(Button* button);
-	void labelTextChanged(juce::Label* label) override;
+    void buttonEvent(Button* button);
+    void labelTextChanged(juce::Label* label) override;
 
-	void comboBoxChanged(ComboBox* c);
+    void comboBoxChanged(ComboBox* c);
 
-	void updateSettings();
+    void updateSettings();
 
-	void saveCustomParameters(XmlElement* xml);
-	void loadCustomParameters(XmlElement* xml);
+    void saveCustomParameters(XmlElement* xml);
+    void loadCustomParameters(XmlElement* xml);
 
-	void setDefaults(double lowCut, double highCut);
-
+    void setDefaults(double lowCut, double highCut);
 
 private:
 
-	ScopedPointer<ComboBox> detectorSelector;
+    ScopedPointer<ComboBox> detectorSelector;
 
-	ScopedPointer<UtilityButton> plusButton;
+    ScopedPointer<UtilityButton> plusButton;
 
-	void addDetector();
+    void addDetector();
 
-	OwnedArray<DetectorInterface> interfaces;
+    OwnedArray<DetectorInterface> interfaces;
 
-	int previousChannelCount;
+    int previousChannelCount;
 
-	Array<Colour> backgroundColours;
+    Array<Colour> backgroundColours;
 
-	String lastThresholdConstString;
-	String lastThresholdTimeString;
+    String lastThresholdConstString;
+    String lastThresholdTimeString;
 
-	ScopedPointer<Label> thresholdConstLabel;
-	ScopedPointer<Label> eventStimulationTimeLabel;
+    ScopedPointer<Label> thresholdConstLabel;
+    ScopedPointer<Label> eventStimulationTimeLabel;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SWRDetectorEditor);
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SWRDetectorEditor);
 };
 
 class DetectorInterface : public Component,
-	public ComboBox::Listener,
-	public Button::Listener
+    public ComboBox::Listener,
+    public Button::Listener
 {
+
 public:
-	DetectorInterface(SWRDetector*, Colour, int);
-	~DetectorInterface();
+    DetectorInterface(SWRDetector*, Colour, int);
+    ~DetectorInterface();
 
-	void paint(Graphics& g);
+    void paint(Graphics& g);
 
-	void comboBoxChanged(ComboBox*);
-	void buttonClicked(Button*);
+    void comboBoxChanged(ComboBox*);
+    void buttonClicked(Button*);
 
-	void updateChannels(int);
+    void updateChannels(int);
 
-	void setInputChan(int);
-	void setOutputChan(int);
-	void setGateChan(int);
+    void setInputChan(int);
+    void setOutputChan(int);
+    void setGateChan(int);
 
-	int getInputChan();
-	int getOutputChan();
-	int getGateChan();
+    int getInputChan();
+    int getOutputChan();
+    int getGateChan();
 
 private:
+    Colour backgroundColour;
 
-	Colour backgroundColour;
+    Font font;
 
-	Font font;
+    int idNum;
 
-	int idNum;
+    SWRDetector* processor;
 
-	SWRDetector* processor;
+    OwnedArray<ElectrodeButton> phaseButtons;
 
-	OwnedArray<ElectrodeButton> phaseButtons;
-
-	ScopedPointer<ComboBox> inputSelector;
-	ScopedPointer<ComboBox> gateSelector;
-	ScopedPointer<ComboBox> outputSelector;
+    ScopedPointer<ComboBox> inputSelector;
+    ScopedPointer<ComboBox> gateSelector;
+    ScopedPointer<ComboBox> outputSelector;
 
 };
 

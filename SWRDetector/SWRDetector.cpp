@@ -30,8 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 SWRDetector::SWRDetector()
-	: GenericProcessor("SWR Detector")
-
+    : GenericProcessor("SWR Detector")
 {
 
 }
@@ -43,34 +42,34 @@ SWRDetector::~SWRDetector()
 
 AudioProcessorEditor* SWRDetector::createEditor()
 {
-	editor = new SWRDetectorEditor(this, true);
+    editor = new SWRDetectorEditor(this, true);
 
-	std::cout << "Creating editor." << std::endl;
+    std::cout << "Creating editor." << std::endl;
 
-	return editor;
+    return editor;
 }
 
 void SWRDetector::addModule()
 {
-	DetectorModule m = DetectorModule();
-	m.inputChan = -1;
-	m.outputChan = -1;
-	m.gateChan = -1;
-	m.isActive = true;
-	m.lastSample = 0.0f;
-	m.samplesSinceTrigger = 5000;
-	m.wasTriggered = false;
-	m.numSWRDetected = 0;
-	m.shortGreaterThanLongCount = 0;
-	m.thresholdComparisonConstant = 3.0;
-	m.eventStimulationTime = 0.05;
+    DetectorModule m = DetectorModule();
+    m.inputChan = -1;
+    m.outputChan = -1;
+    m.gateChan = -1;
+    m.isActive = true;
+    m.lastSample = 0.0f;
+    m.samplesSinceTrigger = 5000;
+    m.wasTriggered = false;
+    m.numSWRDetected = 0;
+    m.shortGreaterThanLongCount = 0;
+    m.thresholdComparisonConstant = 3.0;
+    m.eventStimulationTime = 0.05;
 
-	modules.add(m);
+    modules.add(m);
 }
 
 void SWRDetector::setActiveModule(int i)
 {
-	activeModule = i;
+    activeModule = i;
 
 }
 
@@ -78,162 +77,161 @@ void SWRDetector::setActiveModule(int i)
 void SWRDetector::setParameter(int parameterIndex, float newValue)
 {
 
-	DetectorModule& module = modules.getReference(activeModule);
+    DetectorModule& module = modules.getReference(activeModule);
 
     if (parameterIndex == 2)   // inputChan
-	{
-		module.inputChan = (int)newValue;
-	}
-	else if (parameterIndex == 3)   // outputChan
-	{
-		module.outputChan = (int)newValue;
-	}
-	else if (parameterIndex == 4)   // gateChan
-	{
-		module.gateChan = (int)newValue;
-		if (module.gateChan < 0)
-		{
-			module.isActive = true;
-		}
-		else
-		{
-			module.isActive = false;
-		}
-	}
-	else if (parameterIndex == 5) // RMS threshold comparison constant
-	{
-		module.thresholdComparisonConstant = newValue;
-	}
-	else if (parameterIndex == 6) // event stimulation time
-	{
-		module.eventStimulationTime = newValue;
-	}
+    {
+        module.inputChan = (int)newValue;
+    }
+    else if (parameterIndex == 3)   // outputChan
+    {
+        module.outputChan = (int)newValue;
+    }
+    else if (parameterIndex == 4)   // gateChan
+    {
+        module.gateChan = (int)newValue;
+        if (module.gateChan < 0)
+        {
+            module.isActive = true;
+        }
+        else
+        {
+            module.isActive = false;
+        }
+    }
+    else if (parameterIndex == 5) // RMS threshold comparison constant
+    {
+        module.thresholdComparisonConstant = newValue;
+    }
+    else if (parameterIndex == 6) // event stimulation time
+    {
+        module.eventStimulationTime = newValue;
+    }
 
 }
 
 bool SWRDetector::enable()
 {
-	return true;
+    return true;
 }
 
 void SWRDetector::handleEvent(int eventType, MidiMessage& event, int sampleNum)
 {
 
-	if (eventType == TTL)
-	{
-		const uint8* dataptr = event.getRawData();
+    if (eventType == TTL)
+    {
+        const uint8* dataptr = event.getRawData();
 
-		// int eventNodeId = *(dataptr+1);
-		int eventId = *(dataptr + 2);
-		int eventChannel = *(dataptr + 3);
+        // int eventNodeId = *(dataptr+1);
+        int eventId = *(dataptr + 2);
+        int eventChannel = *(dataptr + 3);
 
-		for (int i = 0; i < modules.size(); i++)
-		{
-			DetectorModule& module = modules.getReference(i);
+        for (int i = 0; i < modules.size(); i++)
+        {
+            DetectorModule& module = modules.getReference(i);
 
-			if (module.gateChan == eventChannel)
-			{
-				if (eventId)
-					module.isActive = true;
-				else
-					module.isActive = false;
-			}
-		}
+            if (module.gateChan == eventChannel)
+            {
+                if (eventId)
+                    module.isActive = true;
+                else
+                    module.isActive = false;
+            }
+        }
 
-	}
+    }
 
 }
 
 void SWRDetector::SlidingWindow::setTimeWindow(double time)
 {
-	timeWindow = time;
+    timeWindow = time;
 }
 
 void SWRDetector::SlidingWindow::updateSumOfSquares(float sample, float sampleRate)
 {
-	if (slidingWindow.size() >= (sampleRate * timeWindow)) 
-	{
-		sumOfSquares -= pow(slidingWindow.front(), 2);
-		slidingWindow.pop();
-	}
+    if (slidingWindow.size() >= (sampleRate * timeWindow))
+    {
+        sumOfSquares -= pow(slidingWindow.front(), 2);
+        slidingWindow.pop();
+    }
 
-	sumOfSquares += pow(sample, 2);
-	slidingWindow.push(sample);	
+    sumOfSquares += pow(sample, 2);
+    slidingWindow.push(sample);
 }
 
 float SWRDetector::SlidingWindow::calculateRMS()
 {
-	return sqrt(sumOfSquares / (slidingWindow.size()));
+    return sqrt(sumOfSquares / (slidingWindow.size()));
 }
 
 
 
 void SWRDetector::process(AudioSampleBuffer& buffer,
-	MidiBuffer& events)
+                          MidiBuffer& events)
 {
 
-	checkForEvents(events);
+    checkForEvents(events);
 
-	// loop through the modules
-	for (int i = 0; i < modules.size(); i++)
-	{
-		DetectorModule& module = modules.getReference(i);
+    // loop through the modules
+    for (int i = 0; i < modules.size(); i++)
+    {
+        DetectorModule& module = modules.getReference(i);
 
-		module.longWindow.setTimeWindow(longTimeWindow);
-		module.shortWindow.setTimeWindow(shortTimeWindow);
+        module.longWindow.setTimeWindow(longTimeWindow);
+        module.shortWindow.setTimeWindow(shortTimeWindow);
 
-		// check to see if it's active and has a channel
-		if (module.isActive && module.outputChan >= 0 &&
-			module.inputChan >= 0 &&
-			module.inputChan < buffer.getNumChannels())
-		{
-			for (int i = 0; i < getNumSamples(module.inputChan); i++)
-			{
-				const float sample = *buffer.getReadPointer(module.inputChan, i);
+        // check to see if it's active and has a channel
+        if (module.isActive && module.outputChan >= 0 &&
+                module.inputChan >= 0 &&
+                module.inputChan < buffer.getNumChannels())
+        {
+            for (int i = 0; i < getNumSamples(module.inputChan); i++)
+            {
+                const float sample = *buffer.getReadPointer(module.inputChan, i);
 
-				module.longWindow.updateSumOfSquares(sample, getSampleRate());
-				module.shortWindow.updateSumOfSquares(sample, getSampleRate());
+                module.longWindow.updateSumOfSquares(sample, getSampleRate());
+                module.shortWindow.updateSumOfSquares(sample, getSampleRate());
 
-				if (module.shortWindow.calculateRMS() > (module.thresholdComparisonConstant * module.longWindow.calculateRMS()))
-				{
-					module.shortGreaterThanLongCount++;
-				}
-				else
-				{
-					module.shortGreaterThanLongCount = 0;
-				}
+                if (module.shortWindow.calculateRMS() > (module.thresholdComparisonConstant * module.longWindow.calculateRMS()))
+                {
+                    module.shortGreaterThanLongCount++;
+                }
+                else
+                {
+                    module.shortGreaterThanLongCount = 0;
+                }
 
-				if (module.shortGreaterThanLongCount >= (shortTimeWindow * getSampleRate()))
-				{
-					module.numSWRDetected++;
-					module.shortGreaterThanLongCount = 0;
-					addEvent(events, TTL, i, 1, module.outputChan);
-					module.samplesSinceTrigger = 0;
-					module.wasTriggered = true;
-				}
+                if (module.shortGreaterThanLongCount >= (shortTimeWindow * getSampleRate()))
+                {
+                    module.numSWRDetected++;
+                    module.shortGreaterThanLongCount = 0;
+                    addEvent(events, TTL, i, 1, module.outputChan);
+                    module.samplesSinceTrigger = 0;
+                    module.wasTriggered = true;
+                }
+
+                module.lastSample = sample;
+
+                if (module.wasTriggered)
+                {
+                    if (module.samplesSinceTrigger >= (module.eventStimulationTime * getSampleRate()))
+                    {
+                        addEvent(events, TTL, i, 0, module.outputChan);
+                        module.wasTriggered = false;
+                    }
+                    else
+                    {
+                        module.samplesSinceTrigger++;
+                    }
+                }
+
+            }
 
 
-				module.lastSample = sample;
+        }
 
-				if (module.wasTriggered)
-				{
-					if (module.samplesSinceTrigger >= (module.eventStimulationTime * getSampleRate()))
-					{
-						addEvent(events, TTL, i, 0, module.outputChan);
-						module.wasTriggered = false;
-					}
-					else
-					{
-						module.samplesSinceTrigger++;
-					}
-				}
-
-			}
-
-
-		}
-
-	}
+    }
 
 }
 

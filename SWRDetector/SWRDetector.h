@@ -49,66 +49,64 @@ public:
     SWRDetector();
     ~SWRDetector();
 
-	
-	bool hasEditor() const
-	{
-		return true;
-	}
+    bool hasEditor() const
+    {
+        return true;
+    }
 
-	bool enable();
+    bool enable();
 
-	AudioProcessorEditor* createEditor();
+    AudioProcessorEditor* createEditor();
 
     void process(AudioSampleBuffer& buffer, MidiBuffer& events);
     void setParameter(int parameterIndex, float newValue);
 
-	void addModule();
-	void setActiveModule(int);
+    void addModule();
+    void setActiveModule(int);
 
 private:
 
-	const double longTimeWindow = 2.000;							
-	const double shortTimeWindow = 0.008;				
-	const double thresholdSWREventTime = 0.008;	
+    const double longTimeWindow = 2.000;
+    const double shortTimeWindow = 0.008;
+    const double thresholdSWREventTime = 0.008;
 
-	class SlidingWindow
-	{
-	public:
-		void updateSumOfSquares(float sample, float sampleRate);
-		void setTimeWindow(double time);
-		float calculateRMS();
-		
+    class SlidingWindow
+    {
+    public:
+        void updateSumOfSquares(float sample, float sampleRate);
+        void setTimeWindow(double time);
+        float calculateRMS();
 
-	private:
-		queue<float> slidingWindow;
-		double timeWindow;
-		float sumOfSquares = 0;
-		float RMSValue = 0;
-	};
-	
+    private:
+        queue<float> slidingWindow;
+        double timeWindow;
+        float sumOfSquares = 0;
+        float RMSValue = 0;
+    };
 
-	struct DetectorModule
-	{
-		int inputChan;
-		int gateChan;
-		int outputChan;
-		bool isActive;
-		float lastSample;
-		int samplesSinceTrigger;
-		int shortGreaterThanLongCount;
-		int numSWRDetected;
-		bool wasTriggered;
-		float thresholdComparisonConstant;		 
-		float eventStimulationTime;
-		SlidingWindow shortWindow;
-		SlidingWindow longWindow;
-	};
 
-	Array<DetectorModule> modules;
+    struct DetectorModule
+    {
+        int inputChan;
+        int gateChan;
+        int outputChan;
+        bool isActive;
+        float lastSample;
+        int samplesSinceTrigger;
+        int shortGreaterThanLongCount;
+        int numSWRDetected;
+        bool wasTriggered;
+        float thresholdComparisonConstant;
+        float eventStimulationTime;
+        SlidingWindow shortWindow;
+        SlidingWindow longWindow;
+    };
 
-	int activeModule;
+    Array<DetectorModule> modules;
 
-	void handleEvent(int eventType, MidiMessage& event, int sampleNum);
+    int activeModule;
+
+    void handleEvent(int eventType, MidiMessage& event, int sampleNum);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SWRDetector);
 
